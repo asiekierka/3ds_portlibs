@@ -1,0 +1,13 @@
+#!/bin/sh
+NAME=xz
+VERSION=5.2.2
+EXTENSION=tar.xz
+SHA256=f341b1906ebcdde291dd619399ae944600edc9193619dd0c0110a5f05bfcc89e
+FILENAME=$NAME-$VERSION.$EXTENSION
+
+pkg-download $FILENAME $SHA256 http://tukaani.org/$NAME/$FILENAME
+cd $NAME-$VERSION
+./configure --prefix="$PREFIX" --host=arm-none-eabi --disable-shared --enable-static --disable-xz \
+  --enable-threads=no
+make
+make -j1 install

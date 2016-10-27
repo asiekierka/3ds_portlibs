@@ -1,0 +1,12 @@
+#!/bin/sh
+NAME=libidn
+VERSION=1.33
+EXTENSION=tar.gz
+SHA256=44a7aab635bb721ceef6beecc4d49dfd19478325e1b47f3196f7d2acc4930e19
+FILENAME=$NAME-$VERSION.$EXTENSION
+
+pkg-download $FILENAME $SHA256 https://ftp.gnu.org/gnu/libidn/$FILENAME
+cd $NAME-$VERSION
+./configure --prefix="$PREFIX" --host=arm-none-eabi --disable-shared --enable-static --disable-nls
+make
+make -j1 install

@@ -1,0 +1,18 @@
+#!/bin/sh
+if [ "$1" == "lite" ]; then
+	NAME=libxmp-lite
+	SHA256=bce9cbdaa19234e08e62660c19ed9a190134262066e7f8c323ea8ad2ac20dc39
+else
+	NAME=libxmp
+	SHA256=353535cc84c8cddae8decec4e65fa4c51fc64f22eb0891bc3dae6eaf25f9cccf
+fi
+
+VERSION=4.4.1
+EXTENSION=tar.gz
+FILENAME=$NAME-$VERSION.$EXTENSION
+
+pkg-download $FILENAME $SHA256 http://sourceforge.net/projects/xmp/files/libxmp/$VERSION/$FILENAME/download
+cd $NAME-$VERSION
+./configure --prefix="$PREFIX" --host=arm-none-eabi --disable-shared --enable-static
+make
+make -j1 install

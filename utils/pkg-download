@@ -1,0 +1,19 @@
+#!/bin/sh
+TARGET="$PKGBASE/files/$1"
+if [ ! -f "$TARGET" ]; then
+	wget -O "$TARGET" "$3"
+fi
+
+SHA256_FOUND=`sha256sum "$TARGET" | cut -f1 -d" "`
+if [ "$2" != "nohash" ] && [ "$SHA256_FOUND" != "$2" ]; then
+	echo "Invalid checksum (found "$SHA256_FOUND", excepted "$2")"
+	rm "$TARGET"
+else
+	if [ "$2" == *zip ]; then
+		echo "Extracting $TARGET..."
+		unzip "$TARGET"
+	else
+		echo "Extracting $TARGET..."
+		tar xf "$TARGET"
+	fi
+fi

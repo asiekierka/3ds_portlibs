@@ -1,0 +1,10 @@
+#!/bin/sh
+VERSION=1.2.8
+SHA256=36658cb768a54c1d4dec43c3116c27ed893e88b02ecfcb44f2166f9c0b7f2a0d
+FILENAME=zlib-$VERSION.tar.gz
+
+pkg-download $FILENAME $SHA256 http://zlib.net/$FILENAME
+cd zlib-$VERSION
+CHOST=arm-none-eabi ./configure --static --prefix="$PREFIX"
+make
+make -j1 install

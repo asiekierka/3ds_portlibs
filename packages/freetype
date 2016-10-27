@@ -1,0 +1,16 @@
+#!/bin/sh
+NAME=freetype
+VERSION=2.7
+EXTENSION=tar.bz2
+SHA256=d6a451f5b754857d2aa3964fd4473f8bc5c64e879b24516d780fb26bec7f7d48
+FILENAME=$NAME-$VERSION.$EXTENSION
+
+pkg-download $FILENAME $SHA256 http://download.savannah.gnu.org/releases/freetype/$FILENAME
+cd $NAME-$VERSION
+
+patch -p1 < "$KEEPDIR"/freetype-2.7-smaller.patch
+
+./configure --prefix="$PREFIX" --host=arm-none-eabi --disable-shared --enable-static \
+  --with-zlib=yes --with-bzip2=no --with-png=no
+make
+make -j1 install

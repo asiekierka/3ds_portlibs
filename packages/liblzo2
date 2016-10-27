@@ -1,0 +1,12 @@
+#!/bin/sh
+NAME=lzo
+VERSION=2.06
+EXTENSION=tar.gz
+SHA256=ff79e6f836d62d3f86ef6ce893ed65d07e638ef4d3cb952963471b4234d43e73
+FILENAME=$NAME-$VERSION.$EXTENSION
+
+pkg-download $FILENAME $SHA256 http://www.oberhumer.com/opensource/lzo/download/$FILENAME
+cd $NAME-$VERSION
+./configure --prefix="$PREFIX" --host=arm-none-eabi --disable-shared --enable-static
+make
+make -j1 install

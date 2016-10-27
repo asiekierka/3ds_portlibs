@@ -1,0 +1,31 @@
+#!/bin/sh
+FILENAME=lua-$LUA_VER.tar.gz
+
+pkg-download $FILENAME $SHA256 https://www.lua.org/ftp/$FILENAME
+cd lua-$LUA_VER
+
+if [ ! -f etc/lua.pc ]; then
+	mkdir -p etc
+	cp $KEEPDIR/lua.pc etc/
+	sed -i -e "s/%VER%/$LUA_PREFIX/g" -e "s/%REL%/$LUA_VER/g" -e "s:%PREFIX%:$PREFIX:" etc/lua.pc
+fi
+
+sed -e 's:llua:llua'$LUA_PREFIX':' -e 's:/include:/include/lua'$LUA_PREFIX':' -i etc/lua.pc
+sed -r -e '/^LUA_(A|T)=/ s/lua/lua'$LUA_PREFIX'/' -e '/^LUAC_T=/ s/luac/luac'$LUA_PREFIX'/' -i src/Makefile
+
+if [ "$LUA_PREFIX" == "5.1" ]; then
+  make CC=$CC AR="$AR rcu" RANLIB=$RANLIB \
+    MYCFLAGS="$CFLAGS" MYLDFLAGS="$LDFLAGS" MYLIBS="$LIBS" \
+    ansi
+else
+  make CC=$CC AR="$AR rcu" RANLIB=$RANLIB \
+    SYSCFLAGS="$CFLAGS" SYSLDFLAGS="$LDFLAGS" SYSLIBS="$LIBS" \
+    generic
+fi
+
+make TO_BIN="lua$LUA_PREFIX luac$LUA_PREFIX" TO_LIB="liblua$LUA_PREFIX.a" INSTALL_DATA='cp -d' \
+  INSTALL_TOP="$PREFIX"/ \
+  INSTALL_INC="$PREFIX"/include/lua$LUA_PREFIX \
+  -j1 install
+
+install -Dm644 etc/lua.pc "$PREFIX"/lib/pkgconfig/lua$LUA_PREFIX.pc

@@ -1,0 +1,13 @@
+#!/bin/sh
+NAME=tremor
+VERSION=2a1a8f621e500fdf0749f115e2206f82919560a3
+EXTENSION=tar.gz
+FILENAME=$NAME-$VERSION.$EXTENSION
+
+VERPATH=`printf $VERSION | cut -c1-7`
+
+pkg-download $FILENAME nohash "https://git.xiph.org/?p=tremor.git;a=snapshot;h=$VERSION;sf=tgz"
+cd $NAME-$VERPATH
+./autogen.sh --prefix="$PREFIX" --host=arm-none-eabi --disable-shared --enable-static --disable-oggtest
+make
+make -j1 install
