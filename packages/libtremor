@@ -9,6 +9,6 @@ VERPATH=`printf $VERSION | cut -c1-7`
 pkg-download $FILENAME nohash "https://git.xiph.org/?p=tremor.git;a=snapshot;h=$VERSION;sf=tgz"
 cd $NAME-$VERPATH
 sed -i 's/AM_CONFIG_HEADER/AC_CONFIG_HEADERS/' configure.in
-./autogen.sh --prefix="$PREFIX" --host=arm-none-eabi --disable-shared --enable-static --disable-oggtest
+./autogen.sh --prefix="$PREFIX" --host=$PKGARCH --disable-shared --enable-static --disable-oggtest
 make
 make -j1 install

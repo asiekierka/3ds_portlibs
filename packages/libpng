@@ -7,6 +7,12 @@ FILENAME=$NAME-$VERSION.$EXTENSION
 
 pkg-download $FILENAME $SHA256 http://download.sourceforge.net/libpng/$FILENAME
 cd $NAME-$VERSION
-./configure --prefix="$PREFIX" --host=arm-none-eabi --disable-shared --enable-static
+./configure --prefix="$PREFIX" --host=$PKGARCH --disable-shared --enable-static
+
+# Workaround for a missing fenv.h, this is used in tests/by tools only anyway
+case "$PKGARCH" in
+	powerpc*) sed -i "s/#define HAVE_FEENABLEEXCEPT 1//" config.h ;;
+esac
+
 make
 make -j1 install
