@@ -1,26 +1,7 @@
 #!/bin/sh
-[ -z "$DEVKITPRO" ] && { echo "Need to set DEVKITPRO env variable!"; exit 1; }
-
-UTILDIR="$(dirname "$0")"
-WORKDIR=`mktemp -d`
-cd "$WORKDIR"
-
-export PKG_CONFIG="$(dirname "$0")"/arm-none-eabi-pkg-config
-export CFLAGS="-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft -O3 -mword-relocations -ffunction-sections"
-export CPPFLAGS="$CFLAGS -I$DEVKITPRO/portlibs/armv6k/include"
-export LDFLAGS="-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft -L$DEVKITPRO/portlibs/armv6k/lib"
-
-export AR=arm-none-eabi-ar
-export AS=arm-none-eabi-as
-export LD=arm-none-eabi-ld
-export RANLIB=arm-none-eabi-ranlib
-export CC=arm-none-eabi-gcc
-export NM=arm-none-eabi-nm
-
-PKGBASE=`realpath "$UTILDIR/.."` PREFIX=`realpath $DEVKITPRO/portlibs/armv6k/` \
-  PKGARCH=arm-none-eabi \
-  KEEPDIR=`realpath "$UTILDIR/../KEEP"` \
-  ROOTDIR=`realpath $DEVKITPRO/portlibs/armv6k/` "$UTILDIR/../packages/$1"
-
-cd "$UTILDIR"
-rm -rf "$WORKDIR"
+PKGARCH=arm-none-eabi \
+PORTLIBSNAME=armv6k \
+PKGCONFIGNAME=arm-none-eabi-pkg-config \
+CFLAGS="-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft -O3 -mword-relocations -ffunction-sections" \
+LDFLAGS="-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft" \
+pkg-build-base "$@"

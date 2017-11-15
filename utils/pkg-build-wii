@@ -1,26 +1,7 @@
 #!/bin/sh
-[ -z "$DEVKITPRO" ] && { echo "Need to set DEVKITPRO env variable!"; exit 1; }
-
-UTILDIR="$(dirname "$0")"
-WORKDIR=`mktemp -d`
-cd "$WORKDIR"
-
-export PKG_CONFIG="$(dirname "$0")"/wii-pkg-config
-export CFLAGS="-DGEKKO -mrvl -mcpu=750 -meabi -mhard-float -I$DEVKITPRO/portlibs/wii/include"
-export CPPFLAGS="$CFLAGS"
-export LDFLAGS="-DGEKKO -mrvl -mcpu=750 -meabi -mhard-float -L$DEVKITPRO/portlibs/wii/lib"
-
-export AR=powerpc-eabi-ar
-export AS=powerpc-eabi-as
-export LD=powerpc-eabi-ld
-export RANLIB=powerpc-eabi-ranlib
-export CC=powerpc-eabi-gcc
-export NM=powerpc-eabi-nm
-
-PKGBASE=`realpath "$UTILDIR/.."` PREFIX=`realpath $DEVKITPRO/portlibs/wii/` \
-  PKGARCH=powerpc-eabi \
-  KEEPDIR=`realpath "$UTILDIR/../KEEP"` \
-  ROOTDIR=`realpath $DEVKITPRO/portlibs/wii/` "$UTILDIR/../packages/$1"
-
-cd "$UTILDIR"
-rm -rf "$WORKDIR"
+PKGARCH=powerpc-eabi \
+PORTLIBSNAME=wii \
+PKGCONFIGNAME=wii-pkg-config \
+CFLAGS="-DGEKKO -mrvl -mcpu=750 -meabi -mhard-float" \
+LDFLAGS="-DGEKKO -mrvl -mcpu=750 -meabi -mhard-float" \
+pkg-build-base "$@"

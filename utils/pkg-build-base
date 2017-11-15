@@ -1,0 +1,31 @@
+#!/bin/sh
+[ -z "$DEVKITPRO" ] && { echo "Need to set DEVKITPRO env variable!"; exit 1; }
+
+UTILDIR="$(dirname "$0")"
+WORKDIR=`mktemp -d`
+cd "$WORKDIR"
+cp "$UTILDIR"/pkg-config-base ./pkg-config
+sed -i "s/%PORTLIBNAME%/$PORTLIBSNAME/g" ./pkg-config
+
+# Required variables:
+# PKGARCH, PORTLIBSNAME, PKGCONFIGNAME, CFLAGS, LDFLAGS
+
+export PKG_CONFIG="$WORKDIR"/"$PKGCONFIGNAME"
+export CFLAGS="$CFLAGS -I$DEVKITPRO/portlibs/$PORTLIBSNAME/include"
+export CPPFLAGS="$CFLAGS"
+export LDFLAGS="$LDFLAGS -L$DEVKITPRO/portlibs/$PORTLIBSNAME/lib"
+
+export AR="$PKGARCH"-ar
+export AS="$PKGARCH"-as
+export LD="$PKGARCH"-ld
+export RANLIB="$PKGARCH"-ranlib
+export CC="$PKGARCH"-gcc
+export NM="$PKGARCH"-nm
+
+PKGBASE=`realpath "$UTILDIR/.."` PREFIX=`realpath $DEVKITPRO/portlibs/$PORTLIBSNAME/` \
+  PKGARCH="$PKGARCH" CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS" \
+  KEEPDIR=`realpath "$UTILDIR/../KEEP"` \
+  ROOTDIR=`realpath $DEVKITPRO/portlibs/$PORTLIBSNAME/` "$UTILDIR/../packages/$1"
+
+cd "$UTILDIR"
+rm -rf "$WORKDIR"
