@@ -1,0 +1,7 @@
+#!/bin/sh
+PKGARCH=aarch64-none-elf \
+PORTLIBSNAME=cortex-a57 \
+PKGCONFIGNAME=cortex-a57-pkg-config \
+CFLAGS="-march=armv8-a -mtune=cortex-a57 -mtp=soft -fPIE -O2 -ffunction-sections" \
+LDFLAGS="-march=armv8-a -mtune=cortex-a57 -mtp=soft -fPIE" \
+pkg-build-base "$@"
